@@ -1,0 +1,3 @@
+/home/galax/projects/CRT-P/build/CMakeFiles/CRT-P.dir
+/home/galax/projects/CRT-P/build/CMakeFiles/edit_cache.dir
+/home/galax/projects/CRT-P/build/CMakeFiles/rebuild_cache.dir
