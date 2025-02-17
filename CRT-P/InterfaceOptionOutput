@@ -1,0 +1,68 @@
+
+   #####     ######   #######      #######  
+ #       #  #       #    #        #       # 
+#           #  #####     #        #  #####  
+#           #  #         #   ===  #  #      
+#           #   #        #        #  #      
+#       #   #    #       #        #  #      
+ ######     #     #      #        #  #      
+--------------------------------------------
+Welcome !
+*               The menu bar                  *
++              ˜‾‾‾‾‾‾‾‾‾‾‾‾˜                 +
++'E' / 'e' = Example pcap/ng file             +
++'P' / 'p' = Personal pcap/ng file            +
++'S' / 's' = Sniff interface(IPv4 is required)+
++'Q' / 'q' = Quit...                          +
+*+++++++++++++++++++++++++++++++++++++++++++++*
+Enter character: s
+You chose the "Sniffing" option.
+Enter an IP address: 10.0.0.50   
+Validating IP address. . . 
+Valid IP: 10.0.0.50
++++++++++++ Interface info +++++++++++
++-- Interface name: eth0           --+
++-- Interface description:         --+
++-- MAC address: 08:00:27:n8:18:00 --+
++-- Default gateway: 17.3.9.9      --+
++-- Interface MTU: 1379            --+
++-- DNS server: 10.2.3.3           --+
+++++++++++++++++++++++++++++++++++++++
+Filter? Y/N: n
+For how much time do you want to capture traffic in seconds(10 seconds default)?
+10
+Capturing packets for 10 seconds...
+***** Capture Completed *****
+Packet 0 - Timestamp: 1739802351.944160
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: UDP
+* Layer: Other
+Packet 1 - Timestamp: 1739802351.944235
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 2 - Timestamp: 1739802351.944484
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: ICMP
+
+***
+
+Packet 132 - Timestamp: 1739802354.25736
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: ICMP
+Packet 133 - Timestamp: 1739802355.3569
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+***** RESULTS *****
+Ethernet packet count: -134-
+IPv4 packet count:     -87-
+IPv6 packet count:     -47-
+TCP packet count:      -79-
+UDP packet count:      -47-
+DNS packet count:      -46-
+HTTP packet count:     -2-
+SSL packet count:      -18-
