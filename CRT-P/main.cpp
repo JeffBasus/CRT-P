@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <memory>
 #include <cctype>
-#include <cstring>
 #include <ctime>
 #include <sstream>
 #include <vector>
@@ -18,11 +17,9 @@
 #include "SystemUtils.h"
 
 
-bool isValidNumber(const std::string& str, int minVal, int maxVal) 
-{
+bool isValidNumber(const std::string& str, int minVal, int maxVal) {
     if (str.empty()) return false;
-    for (char c : str) 
-    {
+    for (char c : str) {
         if (!isdigit(c)) return false;
     }
     int num = std::stoi(str);
@@ -30,29 +27,25 @@ bool isValidNumber(const std::string& str, int minVal, int maxVal)
 }
 
 
-bool isValidIPAddress(std::string ip) 
-{
+bool isValidIPAddress(std::string ip) {
     std::stringstream ss(ip);
     std::string segment;
     std::vector<std::string> octets;
 
-    while (getline(ss, segment, '.')) 
-    {
+    while (getline(ss, segment, '.')) {
         octets.push_back(segment);
     }
 
     if (octets.size() != 4) return false;
 
-    for (const std::string& octet : octets) 
-    {
+    for (const std::string& octet : octets) {
         if (!isValidNumber(octet, 0, 255)) return false;
     }
     return true;
 }
 
 // ******* The statistic struct ******* //
-struct PacketStats 
-{
+struct PacketStats {
     int ethPacketCount = 0;
     int ipv4PacketCount = 0;
     int ipv6PacketCount = 0;
@@ -62,14 +55,12 @@ struct PacketStats
     int httpPacketCount = 0;
     int sslPacketCount = 0;
 
-    void clear() 
-    {
+    void clear() {
         ethPacketCount = ipv4PacketCount = ipv6PacketCount = tcpPacketCount = udpPacketCount =
             dnsPacketCount = httpPacketCount = sslPacketCount = 0;
     }
 
-    void consumePacket(pcpp::Packet& packet) 
-    {
+    void consumePacket(pcpp::Packet& packet) {
         if (packet.isPacketOfType(pcpp::Ethernet)) ethPacketCount++;
         if (packet.isPacketOfType(pcpp::IPv4)) ipv4PacketCount++;
         if (packet.isPacketOfType(pcpp::IPv6)) ipv6PacketCount++;
@@ -80,8 +71,7 @@ struct PacketStats
         if (packet.isPacketOfType(pcpp::SSL)) sslPacketCount++;
     }
 
-    void printToConsole() 
-    {
+    void printToConsole() {
         std::cout << "Ethernet packet count: " << "-" << ethPacketCount << "-" << std::endl
                   << "IPv4 packet count:     " << "-" << ipv4PacketCount << "-" << std::endl
                   << "IPv6 packet count:     " << "-" << ipv6PacketCount << "-" << std::endl
@@ -93,8 +83,7 @@ struct PacketStats
     }
 };
 
-std::string getProtocolName(pcpp::ProtocolType protocol) 
-{
+std::string getProtocolName(pcpp::ProtocolType protocol) {
     if (protocol == pcpp::Ethernet) { return "Ethernet"; }
     else if (protocol == pcpp::IPv4) { return "IPv4"; }
     else if (protocol == pcpp::IPv6) { return "IPv6"; }
@@ -117,14 +106,12 @@ std::string getProtocolName(pcpp::ProtocolType protocol)
     else { return "Other"; }
 }
 
-pcpp::OrFilter filterFunc() 
-{
-    pcpp::OrFilter theFilter;
+pcpp::AndFilter filterFunc(pcpp::AndFilter theFilter) {
     std::string pFilterList;
     int pCount = 0;
 
     std::cout << "choose Protocols/Ports, type \"finish\" to stop: " << std::endl;
-    std::cout << "Protocols: \"Ethernet\", \"IPv4\", \"IPv6\", \"TCP\", \"UDP\", \"DNS\", \"SSL\". "
+    std::cout << "Protocols: \"Ethernet\", \"IPv4\", \"IPv6\", \"TCP\", \"UDP\", \"ICMP\", \"ARP\". "
               << "\nPorts: \"80\", \"22\", \"53\"." << std::endl;
     std::cout << "Enter: ";
     std::getline(std::cin, pFilterList);
@@ -132,13 +119,11 @@ pcpp::OrFilter filterFunc()
     std::stringstream ss(pFilterList);
     std::string pName;
 
-    while (getline(ss, pName, ' ')) 
-    {
+    while (getline(ss, pName, ' ')) {
         std::string upperPName = pName;
         std::transform(upperPName.begin(), upperPName.end(), upperPName.begin(), ::toupper);
 
-        if ((upperPName == "FINISH") || (upperPName == "FINISHED")) 
-        {
+        if ((upperPName == "FINISH") || (upperPName == "FINISHED")) {
             break;
         }
 
@@ -152,16 +137,17 @@ pcpp::OrFilter filterFunc()
             theFilter.addFilter(new pcpp::ProtoFilter(pcpp::IPv4));
             pCount++;
         } else if (upperPName == "IPV6") {
+            pcpp::ProtoFilter protocolFilter(pcpp::IPv6);
             theFilter.addFilter(new pcpp::ProtoFilter(pcpp::IPv6));
             pCount++;
         } else if (upperPName == "TCP") {
             theFilter.addFilter(new pcpp::ProtoFilter(pcpp::TCP));
             pCount++;
-        } else if (upperPName == "DNS") {
-            theFilter.addFilter(new pcpp::ProtoFilter(pcpp::DNS));
+        } else if (upperPName == "ICMP") {
+            theFilter.addFilter(new pcpp::ProtoFilter(pcpp::ICMP));
             pCount++;
-        } else if (upperPName == "SSL") {
-            theFilter.addFilter(new pcpp::ProtoFilter(pcpp::SSL));
+        } else if (upperPName == "ARP") {
+            theFilter.addFilter(new pcpp::ProtoFilter(pcpp::ARP));
             pCount++;
         } else if (upperPName == "80") {
             theFilter.addFilter(new pcpp::PortFilter(80, pcpp::SRC_OR_DST));
@@ -181,32 +167,31 @@ pcpp::OrFilter filterFunc()
     {
         std::cout << "Invalid filter list" << std::endl;
         std::cout << "NO filter" << std::endl;
-        return pcpp::OrFilter();  // Return empty filter
+        theFilter.addFilter(new pcpp::ProtoFilter(pcpp::Ethernet));
+        return theFilter;
     }
 
     if (pCount == 0) 
     {
+        theFilter.addFilter(new pcpp::ProtoFilter(pcpp::Ethernet));
         std::cout << "NO filter" << std::endl;
     }
 
     return theFilter;
 }
 
-void processPackets(pcpp::RawPacketVector& packetVector) 
-{
+void processPackets(pcpp::RawPacketVector& packetVector) {
     PacketStats stats;
 
     // Sort packets by timestamp
-    std::sort(packetVector.begin(), packetVector.end(), [](const pcpp::RawPacket* a, const pcpp::RawPacket* b) 
-    {
+    std::sort(packetVector.begin(), packetVector.end(), [](const pcpp::RawPacket* a, const pcpp::RawPacket* b) {
         timespec tsA = a->getPacketTimeStamp();
         timespec tsB = b->getPacketTimeStamp();
         return (tsA.tv_sec < tsB.tv_sec) || (tsA.tv_sec == tsB.tv_sec && tsA.tv_nsec < tsB.tv_nsec);
     });
 
     // Iterate through packets
-    for (size_t i = 0; i < packetVector.size(); i++) 
-    {
+    for (size_t i = 0; i < packetVector.size(); i++) {
         pcpp::Packet parsedPacket(packetVector.at(i));
 
         std::cout << "Packet " << i << " - Timestamp: "
@@ -215,32 +200,31 @@ void processPackets(pcpp::RawPacketVector& packetVector)
 
         // Iterate over all layers
         pcpp::Layer* layer = parsedPacket.getFirstLayer();
-        while (layer != nullptr) 
-        {
+        while (layer != nullptr) {
             std::cout << "* Layer: " << getProtocolName(layer->getProtocol()) << std::endl;
             layer = layer->getNextLayer();
         }
 
-        stats.consumePacket(parsedPacket);  
+        stats.consumePacket(parsedPacket);  // Count packet types
     }
 
     std::cout << "***** RESULTS *****" << std::endl;
     stats.printToConsole();
 }
 
-bool menuFilter() 
-{
+bool menuFilter() {
     char iFilter;
     std::cout << "Filter? Y/N: ";
     std::cin >> iFilter;
 
-    if (std::cin.fail()) 
-    {
+    if (std::cin.fail()) {
         std::cin.clear();
         std::cin.ignore(100, '\n');
         std::cout << "Invalid input.  Assuming no filter." << std::endl;
         return false;
     }
+
+    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     switch (iFilter) {
         case 'y':
@@ -255,17 +239,14 @@ bool menuFilter()
     }
 }
 
-int sniffSniff(const std::string& source, bool isLive) 
-{
+int sniffSniff(const std::string& source, bool isLive) {
     pcpp::RawPacketVector packetVector;
     std::string tCaptureString;
     int tCaptureInteger = 10;
 
-    if (isLive) 
-    {
+    if (isLive) {
         auto* device = pcpp::PcapLiveDeviceList::getInstance().getPcapLiveDeviceByIp(source);
-        if (device == nullptr) 
-        {
+        if (device == nullptr) {
             std::cerr << "Cannot find interface" << std::endl;
             return 1;
         }
@@ -278,23 +259,20 @@ int sniffSniff(const std::string& source, bool isLive)
                   << "+-- Default gateway: " << device->getDefaultGateway() << "      --+" << std::endl
                   << "+-- Interface MTU: " << device->getMtu() << "            --+" << std::endl;
 
-        if (!device->getDnsServers().empty()) 
-        {
+        if (!device->getDnsServers().empty()) {
             std::cout << "+-- DNS server: " << device->getDnsServers().front() << "           --+" << std::endl;
         }
         std::cout << "++++++++++++++++++++++++++++++++++++++" << std::endl;
 
-        if (!device->open()) 
-        {
+        if (!device->open()) {
             std::cerr << "Cannot open device" << std::endl;
             return 1;
         }
 
         // Setting filter
-        pcpp::OrFilter filter;
-        if (menuFilter()) 
-        {
-            filter = filterFunc();
+        pcpp::AndFilter filter;
+        if (menuFilter()) {
+            filter = filterFunc(filter);
             device->setFilter(filter);
         }
 
@@ -302,30 +280,23 @@ int sniffSniff(const std::string& source, bool isLive)
                   << std::endl;
         std::cin >> tCaptureString;
 
-        if (!tCaptureString.empty()) 
-        {
+        if (!tCaptureString.empty()) {
             bool isValid = true;
-            for (char c : tCaptureString) 
-            {
-                if (!isdigit(c)) 
-                {
+            for (char c : tCaptureString) {
+                if (!isdigit(c)) {
                     std::cout << "Invalid input, using default(10 sec)" << std::endl;
                     isValid = false;
                     break;
                 }
             }
-            if (isValid) 
-            {
+            if (isValid) {
                 tCaptureInteger = std::stoi(tCaptureString);
-                if (tCaptureInteger > 3600) 
-                {
+                if (tCaptureInteger > 3600) {
                     tCaptureInteger = 3600;
                     std::cout << "To much time, setting to 3600 sec(max)" << std::endl;
                 }
             }
-        } 
-        else 
-        {
+        } else {
             std::cout << "Using default(10 sec)" << std::endl;
         }
 
@@ -336,32 +307,27 @@ int sniffSniff(const std::string& source, bool isLive)
         device->close();
         std::cout << "***** Capture Completed *****" << std::endl;
 
-    } 
-    else 
-    {
+    } else {
         // READ FROM PCAP FILE
         std::unique_ptr<pcpp::IFileReaderDevice> reader(pcpp::IFileReaderDevice::getReader(source));
 
-        if (!reader->open()) 
-        {
+        if (!reader->open()) {
             std::cerr << "Error opening PCAP file: " << source << std::endl;
             return 1;
         }
 
-        pcpp::OrFilter filter;
+        pcpp::AndFilter filter;
         // Setting filter
-        if (menuFilter()) 
-        {
-            filter = filterFunc();
+        if (menuFilter()) {
+            filter = filterFunc(filter);
             reader->setFilter(filter);
+            std::cout << "Filter ON" << std::endl;
         }
 
         pcpp::RawPacket* rawPacket;  
-        while (true) 
-        {
+        while (true) {
             rawPacket = new pcpp::RawPacket(); 
-            if (!reader->getNextPacket(*rawPacket)) 
-            {
+            if (!reader->getNextPacket(*rawPacket)) {
                 delete rawPacket; 
                 break;
             }
@@ -372,8 +338,7 @@ int sniffSniff(const std::string& source, bool isLive)
 
     processPackets(packetVector);
 
-    for (pcpp::RawPacket* packet : packetVector) 
-    {
+    for (pcpp::RawPacket* packet : packetVector) {
         delete packet;
     }
     packetVector.clear();
@@ -406,14 +371,14 @@ int menu() {
 
     std::cin >> menuInput;
 
-    if (std::cin.fail() || isBlank(menuInput)) {
+    if (std::cin.fail() || isBlank(menuInput)) 
+    {    // if (std::cin.fail() || isBlank(menuInput))
         std::cin.clear();
         std::cin.ignore(100, '\n');
         std::cerr << "Invalid input. Please try again.\n";
         return menu();
     }
 
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
     switch (menuInput) {
         case 'E':
@@ -439,6 +404,8 @@ int menu() {
             std::string userIP;
             std::cout << "Enter an IP address: ";
             std::cin >> userIP;
+
+
 
             std::cout << "Validating IP address. . . " << std::endl;
             if (isValidIPAddress(userIP)) {
