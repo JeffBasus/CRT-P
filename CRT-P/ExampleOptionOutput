@@ -1,0 +1,161 @@
+*** Example pcap file opsion ***
+   #####     ######   #######      #######  
+ #       #  #       #    #        #       # 
+#           #  #####     #        #  #####  
+#           #  #         #   ===  #  #      
+#           #   #        #        #  #      
+#       #   #    #       #        #  #      
+ ######     #     #      #        #  #      
+--------------------------------------------
+Welcome !
+*               The menu bar                  *
++              ˜‾‾‾‾‾‾‾‾‾‾‾‾˜                 +
++'E' / 'e' = Example pcap/ng file             +
++'P' / 'p' = Personal pcap/ng file            +
++'S' / 's' = Sniff interface(IPv4 is required)+
++'Q' / 'q' = Quit...                          +
+*+++++++++++++++++++++++++++++++++++++++++++++*
+Enter character: e
+You chose the "Example" option.
+Filter? Y/N: y
+choose Protocols/Ports, type "finish" to stop: 
+Protocols: "Ethernet", "IPv4", "IPv6", "TCP", "UDP", "ICMP", "ARP". 
+Ports: "80", "22", "53".
+Enter: TcP 80 finish
+Filter ON
+Packet 0 - Timestamp: 1361916156.677488
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 1 - Timestamp: 1361916156.693315
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 2 - Timestamp: 1361916156.716947
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 3 - Timestamp: 1361916156.721634
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 4 - Timestamp: 1361916156.721748
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 5 - Timestamp: 1361916156.722320
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Other
+Packet 6 - Timestamp: 1361916156.757054
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 7 - Timestamp: 1361916156.757180
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 8 - Timestamp: 1361916156.757795
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Other
+Packet 9 - Timestamp: 1361916156.764169
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Packet Trailer
+Packet 10 - Timestamp: 1361916156.764283
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Packet Trailer
+Packet 11 - Timestamp: 1361916156.764919
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Other
+Packet 12 - Timestamp: 1361916156.766111
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Other
+* Layer: Other
+Packet 13 - Timestamp: 1361916156.766211
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 14 - Timestamp: 1361916156.766213
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 15 - Timestamp: 1361916156.767059
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 16 - Timestamp: 1361916156.799199
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Other
+* Layer: Other
+Packet 17 - Timestamp: 1361916156.799200
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Packet Trailer
+Packet 18 - Timestamp: 1361916156.799329
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Packet Trailer
+Packet 19 - Timestamp: 1361916156.800214
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Packet Trailer
+Packet 20 - Timestamp: 1361916156.803380
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 21 - Timestamp: 1361916156.818064
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 22 - Timestamp: 1361916156.823893
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Other
+* Layer: Other
+Packet 23 - Timestamp: 1361916156.823994
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 24 - Timestamp: 1361916156.824757
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 25 - Timestamp: 1361916156.825424
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+Packet 26 - Timestamp: 1361916156.848077
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+* Layer: Packet Trailer
+Packet 27 - Timestamp: 1361916156.881783
+* Layer: Ethernet
+* Layer: IPv4
+* Layer: TCP
+***** RESULTS *****
+Ethernet packet count: -28-
+IPv4 packet count:     -28-
+IPv6 packet count:     -0-
+TCP packet count:      -28-
+UDP packet count:      -0-
+DNS packet count:      -0-
+HTTP packet count:     -6-
+SSL packet count:      -0-
